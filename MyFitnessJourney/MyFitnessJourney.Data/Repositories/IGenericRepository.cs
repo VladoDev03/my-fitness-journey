@@ -12,7 +12,7 @@ namespace MyFitnessJourney.Data.Repositories
         IQueryable<TEntity> GetAll();
         IQueryable<TEntity> GetAllAsNoTracking();
         Task<TEntity> CreateAsync(TEntity entity);
-        Task<TEntity> EditAsync(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
         Task<TEntity> DeleteAsync(TEntity entity);
     }
 }

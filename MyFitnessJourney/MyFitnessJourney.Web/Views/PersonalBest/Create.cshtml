@@ -1,0 +1,22 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model List<MyFitnessJourney.Web.Models.Exercise.ExerciseViewModel>
+
+<form asp-action="Create" method="post">
+    <label for="exercise">Exercise</label>
+    <select id="exercise" name="Exercise" class="form-select">
+        <option value="">-- Select an exercise --</option>
+        @foreach (var exercise in Model)
+        {
+            <option value="@exercise.Id">@exercise.CapitalizedName</option>
+        }
+    </select>
+
+    <label for="weight">Weight</label>
+    <input type="number" name="Weight" class="form-control" />
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+

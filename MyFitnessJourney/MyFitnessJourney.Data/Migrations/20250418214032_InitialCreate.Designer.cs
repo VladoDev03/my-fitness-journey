@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFitnessJourney.Web.Data;
 
@@ -11,9 +12,11 @@ using MyFitnessJourney.Web.Data;
 namespace MyFitnessJourney.Web.Data.Migrations
 {
     [DbContext(typeof(MyFitnessJourneyDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418214032_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,12 +248,14 @@ namespace MyFitnessJourney.Web.Data.Migrations
 
                     b.Property<string>("ExerciseId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
 
                     b.ToTable("PersonalBests");
                 });
@@ -304,6 +309,17 @@ namespace MyFitnessJourney.Web.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MyFitnessJourney.Data.Models.PersonalBest", b =>
+                {
+                    b.HasOne("MyFitnessJourney.Data.Models.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyFitnessJourney.Data.Models\MyFitnessJourney.Data.Models.csproj" />
     <ProjectReference Include="..\MyFitnessJourney.Data\MyFitnessJourney.Data.csproj" />
+    <ProjectReference Include="..\MyFitnessJourney.Service.Mapping\MyFitnessJourney.Service.Mapping.csproj" />
+    <ProjectReference Include="..\MyFitnessJourney.Service.Models\MyFitnessJourney.Service.Models.csproj" />
   </ItemGroup>
 
 </Project>

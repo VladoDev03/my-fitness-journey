@@ -32,7 +32,7 @@ namespace MyFitnessJourney.Data.Repositories
             return entity;
         }
 
-        public async Task<TEntity> EditAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
             this._dbContext.Update(entity);
             await this._dbContext.SaveChangesAsync();

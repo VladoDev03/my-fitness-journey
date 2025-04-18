@@ -1,22 +1,32 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MyFitnessJourney.Data.Repositories;
+using MyFitnessJourney.Service.Exercise;
+using MyFitnessJourney.Service.PersonalBest;
 using MyFitnessJourney.Web.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<MyFitnessJourneyDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddTransient<ExerciseRepository>();
+builder.Services.AddTransient<PersonalBestRepository>();
+
+builder.Services.AddTransient<IExerciseService, ExerciseService>();
+builder.Services.AddTransient<IPersonalBestService, PersonalBestService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<MyFitnessJourneyDbContext>();
+
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -24,7 +34,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
