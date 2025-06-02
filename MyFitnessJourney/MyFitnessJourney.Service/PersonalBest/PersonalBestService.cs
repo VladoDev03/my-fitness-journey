@@ -29,7 +29,8 @@ namespace MyFitnessJourney.Service.PersonalBest
             Data.Models.PersonalBest personalBest = new Data.Models.PersonalBest
             {
                 Weight = model.Weight,
-                ExerciseId = exerciseId
+                ExerciseId = exerciseId,
+                UserId = model.UserId
             };
 
             personalBest = await personalBestRepository.CreateAsync(personalBest);

@@ -38,11 +38,19 @@ namespace MyFitnessJourney.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreatePersonalBestModel personalBest)
         {
+            string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
             await _personalBestService
                 .CreateWithExerciseAsync(
                     new PersonalBestServiceModel
                     {
-                        Weight = personalBest.Weight
+                        Weight = personalBest.Weight,
+                        UserId = userId
                     },
                     personalBest.Exercise
                 );
