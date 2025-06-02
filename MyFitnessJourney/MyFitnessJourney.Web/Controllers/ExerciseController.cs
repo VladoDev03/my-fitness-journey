@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyFitnessJourney.Service.Exercise;
 using MyFitnessJourney.Service.Models;
 using MyFitnessJourney.Web.Models.Exercise;
@@ -14,12 +15,14 @@ namespace MyFitnessJourney.Web.Controllers
             _exerciseService = exerciseService;
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateExerciseModel exercise)
         {

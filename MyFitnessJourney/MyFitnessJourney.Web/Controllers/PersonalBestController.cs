@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyFitnessJourney.Data.Models;
 using MyFitnessJourney.Service.Exercise;
 using MyFitnessJourney.Service.Models;
@@ -21,15 +22,11 @@ namespace MyFitnessJourney.Web.Controllers
             _exerciseService = exerciseService;
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {
             string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
 
             List<PersonalBestViewModel> bests = _personalBestService
                 .GetUserPersonalBests(userId)
@@ -46,6 +43,7 @@ namespace MyFitnessJourney.Web.Controllers
             return View(bests);
         }
 
+        [Authorize]
         [HttpGet("GetPerExercise/{exerciseId}")]
         public IActionResult GetPerExercise(string exerciseId)
         {
@@ -70,6 +68,7 @@ namespace MyFitnessJourney.Web.Controllers
             return View(bests);
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
@@ -85,6 +84,7 @@ namespace MyFitnessJourney.Web.Controllers
             return View(exercises);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreatePersonalBestModel personalBest)
         {
@@ -105,7 +105,7 @@ namespace MyFitnessJourney.Web.Controllers
                     personalBest.Exercise
                 );
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("GetAll", "PersonalBest");
         }
     }
 }
