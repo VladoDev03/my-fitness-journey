@@ -15,7 +15,10 @@ namespace MyFitnessJourney.Service.Mapping
             return new PersonalBestServiceModel
             {
                 Id = personalBest.Id,
-                Weight = personalBest.Weight
+                Weight = personalBest.Weight,
+                UserId = personalBest.UserId,
+                Exercise = personalBest.Exercise.ToServiceModel(),
+                Date = personalBest.Date
             };
         }
 
@@ -30,7 +33,8 @@ namespace MyFitnessJourney.Service.Mapping
             {
                 Id = personalBestServiceModel.Id,
                 Weight = personalBestServiceModel.Weight,
-                ExerciseId = personalBestServiceModel.Exercise.Id
+                ExerciseId = personalBestServiceModel.Exercise.Id,
+                Date = personalBestServiceModel.Date
             };
         }
     }

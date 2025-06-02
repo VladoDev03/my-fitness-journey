@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyFitnessJourney.Service.Exercise;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyFitnessJourney.Service.PersonalBest
 {
@@ -30,7 +31,8 @@ namespace MyFitnessJourney.Service.PersonalBest
             {
                 Weight = model.Weight,
                 ExerciseId = exerciseId,
-                UserId = model.UserId
+                UserId = model.UserId,
+                Date = DateTime.Now
             };
 
             personalBest = await personalBestRepository.CreateAsync(personalBest);
@@ -50,7 +52,9 @@ namespace MyFitnessJourney.Service.PersonalBest
 
         public IQueryable<PersonalBestServiceModel> GetAll()
         {
-            throw new NotImplementedException();
+            return personalBestRepository
+                .GetAll()
+                .Select(pb => pb.ToServiceModel());
         }
 
         public async Task<PersonalBestServiceModel> GetByIdAsync(string id)
@@ -61,6 +65,25 @@ namespace MyFitnessJourney.Service.PersonalBest
         public async Task<PersonalBestServiceModel> UpdateAsync(string id, PersonalBestServiceModel model)
         {
             throw new NotImplementedException();
+        }
+
+        public List<PersonalBestServiceModel> GetUserPersonalBests(string userId)
+        {
+            var personalBests = personalBestRepository
+                .GetAll()
+                .Include(pb => pb.Exercise)
+                .Where(pb => pb.UserId == userId)
+                .AsEnumerable()
+                .GroupBy(pb => pb.ExerciseId)
+                .Select(g => g
+                    .OrderByDescending(pb => pb.Weight)
+                    .FirstOrDefault()
+                )
+                .Where(pb => pb != null)
+                .Select(pb => pb.ToServiceModel())
+                .ToList();
+
+            return personalBests;
         }
     }
 }

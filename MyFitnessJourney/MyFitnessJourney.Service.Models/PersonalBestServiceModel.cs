@@ -10,6 +10,7 @@ namespace MyFitnessJourney.Service.Models
     {
         public double Weight { get; set; }
         public ExerciseServiceModel Exercise { get; set; }
+        public DateTime Date { get; set; }
         public string UserId { get; set; }
     }
 }

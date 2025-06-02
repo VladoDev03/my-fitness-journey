@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFitnessJourney.Data.Models;
 using MyFitnessJourney.Service.Exercise;
 using MyFitnessJourney.Service.Models;
 using MyFitnessJourney.Service.PersonalBest;
@@ -21,9 +22,32 @@ namespace MyFitnessJourney.Web.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetAll()
+        {
+            string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            List<PersonalBestViewModel> bests = _personalBestService
+                .GetUserPersonalBests(userId)
+                .Select(pb => new PersonalBestViewModel
+                {
+                    Exercise = pb.Exercise.Name,
+                    Weight = pb.Weight
+                })
+                .OrderBy(pb => pb.Exercise)
+                .ToList();
+
+            return View(bests);
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
-            List<ExerciseViewModel> asd = _exerciseService
+            List<ExerciseViewModel> exercises = _exerciseService
                 .GetAll()
                 .Select(x => new ExerciseViewModel
                 {
@@ -32,7 +56,7 @@ namespace MyFitnessJourney.Web.Controllers
                 })
                 .ToList();
 
-            return View(asd);
+            return View(exercises);
         }
 
         [HttpPost]

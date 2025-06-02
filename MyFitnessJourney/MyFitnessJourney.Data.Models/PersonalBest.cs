@@ -13,5 +13,9 @@ namespace MyFitnessJourney.Data.Models
         public string ExerciseId { get; set; }
 
         public string UserId { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public Exercise Exercise { get; set; }
     }
 }
