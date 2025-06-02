@@ -10,6 +10,10 @@ namespace MyFitnessJourney.Web.Models.PersonalBest
     {
         public string Exercise { get; set; }
 
+        public string ExerciseId { get; set; }
+
         public double Weight { get; set; }
+
+        public string Date { get; set; }
     }
 }

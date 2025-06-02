@@ -69,7 +69,7 @@ namespace MyFitnessJourney.Service.PersonalBest
 
         public List<PersonalBestServiceModel> GetUserPersonalBests(string userId)
         {
-            var personalBests = personalBestRepository
+            List<PersonalBestServiceModel> personalBests = personalBestRepository
                 .GetAll()
                 .Include(pb => pb.Exercise)
                 .Where(pb => pb.UserId == userId)
@@ -81,6 +81,20 @@ namespace MyFitnessJourney.Service.PersonalBest
                 )
                 .Where(pb => pb != null)
                 .Select(pb => pb.ToServiceModel())
+                .ToList();
+
+            return personalBests;
+        }
+
+        public List<PersonalBestServiceModel> GetUserPersonalBestsExercise(string userId, string exerciseId)
+        {
+            List<PersonalBestServiceModel> personalBests = personalBestRepository
+                .GetAll()
+                .Include(pb => pb.Exercise)
+                .Where(pb => pb.UserId == userId && pb.Exercise.Id == exerciseId)
+                .Select(pb => pb.ToServiceModel())
+                .AsEnumerable()
+                .OrderByDescending(pb => pb.Weight)
                 .ToList();
 
             return personalBests;

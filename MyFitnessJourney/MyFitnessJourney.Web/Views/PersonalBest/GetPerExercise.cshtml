@@ -1,0 +1,8 @@
+﻿@model List<MyFitnessJourney.Web.Models.PersonalBest.PersonalBestViewModel>
+
+<h1>@Model[0].Exercise</h1>
+
+@foreach (var item in Model)
+{
+    <h2>@item.Weight kg -> @item.Date</h2>
+}

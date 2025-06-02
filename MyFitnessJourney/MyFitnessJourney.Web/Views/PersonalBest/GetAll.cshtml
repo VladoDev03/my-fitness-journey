@@ -3,6 +3,12 @@
 @{
     foreach (var item in Model)
     {
-        <h2>@item.Exercise -> @item.Weight</h2>
+        <h2>
+            <a asp-controller="PersonalBest"
+               asp-action="GetPerExercise"
+               asp-route-exerciseId="@item.ExerciseId">
+                @item.Exercise
+            </a> -> @item.Weight kg -> @item.Date
+        </h2>
     }
 }

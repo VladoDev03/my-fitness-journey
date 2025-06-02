@@ -36,7 +36,33 @@ namespace MyFitnessJourney.Web.Controllers
                 .Select(pb => new PersonalBestViewModel
                 {
                     Exercise = pb.Exercise.Name,
-                    Weight = pb.Weight
+                    ExerciseId = pb.Exercise.Id,
+                    Weight = pb.Weight,
+                    Date = pb.Date.ToShortDateString()
+                })
+                .OrderBy(pb => pb.Exercise)
+                .ToList();
+
+            return View(bests);
+        }
+
+        [HttpGet("GetPerExercise/{exerciseId}")]
+        public IActionResult GetPerExercise(string exerciseId)
+        {
+            string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            List<PersonalBestViewModel> bests = _personalBestService
+                .GetUserPersonalBestsExercise(userId, exerciseId)
+                .Select(pb => new PersonalBestViewModel
+                {
+                    Exercise = pb.Exercise.Name,
+                    Weight = pb.Weight,
+                    Date = pb.Date.ToShortDateString()
                 })
                 .OrderBy(pb => pb.Exercise)
                 .ToList();

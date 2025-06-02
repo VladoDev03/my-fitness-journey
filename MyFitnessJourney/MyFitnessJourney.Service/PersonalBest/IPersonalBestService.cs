@@ -6,5 +6,6 @@ namespace MyFitnessJourney.Service.PersonalBest
     {
         Task<PersonalBestServiceModel> CreateWithExerciseAsync(PersonalBestServiceModel model, string exerciseId);
         List<PersonalBestServiceModel> GetUserPersonalBests(string userId);
+        List<PersonalBestServiceModel> GetUserPersonalBestsExercise(string userId, string exerciseId);
     }
 }
