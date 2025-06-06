@@ -40,7 +40,7 @@ namespace MyFitnessJourney.Service.PersonalBest
             return personalBest.ToServiceModel();
         }
 
-        public Task<PersonalBestServiceModel> CreateAsync(PersonalBestServiceModel model)
+        public async Task<PersonalBestServiceModel> CreateAsync(PersonalBestServiceModel model)
         {
             throw new NotImplementedException();
         }

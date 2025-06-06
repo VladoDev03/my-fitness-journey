@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MyFitnessJourney.Data.Models
 {
@@ -17,5 +19,7 @@ namespace MyFitnessJourney.Data.Models
         public DateTime Date { get; set; }
 
         public Exercise Exercise { get; set; }
+
+        public IdentityUser User { get; set; }
     }
 }

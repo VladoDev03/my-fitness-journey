@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFitnessJourney.Web.Data;
 
@@ -11,9 +12,11 @@ using MyFitnessJourney.Web.Data;
 namespace MyFitnessJourney.Web.Data.Migrations
 {
     [DbContext(typeof(MyFitnessJourneyDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250605221139_AddWorkoutProgram")]
+    partial class AddWorkoutProgram
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,7 +255,7 @@ namespace MyFitnessJourney.Web.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
@@ -260,8 +263,6 @@ namespace MyFitnessJourney.Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("PersonalBests");
                 });
@@ -284,15 +285,9 @@ namespace MyFitnessJourney.Web.Data.Migrations
                     b.Property<int>("SetsCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("WorkoutDayId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseId");
-
-                    b.HasIndex("WorkoutDayId");
 
                     b.ToTable("ProgramDayExercises");
                 });
@@ -324,11 +319,9 @@ namespace MyFitnessJourney.Web.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("WorkoutPrograms");
                 });
@@ -392,15 +385,7 @@ namespace MyFitnessJourney.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Exercise");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyFitnessJourney.Data.Models.ProgramDayExercise", b =>
@@ -411,15 +396,7 @@ namespace MyFitnessJourney.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyFitnessJourney.Data.Models.WorkoutDay", "WorkoutDay")
-                        .WithMany()
-                        .HasForeignKey("WorkoutDayId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Exercise");
-
-                    b.Navigation("WorkoutDay");
                 });
 
             modelBuilder.Entity("MyFitnessJourney.Data.Models.WorkoutDay", b =>
@@ -431,17 +408,6 @@ namespace MyFitnessJourney.Web.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("WorkoutProgram");
-                });
-
-            modelBuilder.Entity("MyFitnessJourney.Data.Models.WorkoutProgram", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
