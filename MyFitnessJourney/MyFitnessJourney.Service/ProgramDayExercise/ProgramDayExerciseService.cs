@@ -24,14 +24,22 @@ namespace MyFitnessJourney.Service.ProgramDayExercise
             {
                 MaxReps = model.MaxReps,
                 MinReps = model.MinReps,
-                SetsCount = model.SetsCount,
+                SetsCount = model.Sets,
                 WorkoutDayId = model.WorkoutDayId,
                 ExerciseId = model.ExerciseId
             };
 
-            await programDayExerciseRepository.CreateAsync(programDayExercise);
+            Data.Models.ProgramDayExercise result = await programDayExerciseRepository.CreateAsync(programDayExercise);
 
-            return model;
+            return new ProgramDayExerciseServiceModel
+            {
+                Id = result.Id,
+                MaxReps = result.MaxReps,
+                MinReps = result.MinReps,
+                Sets = result.SetsCount,
+                WorkoutDayId = result.WorkoutDayId,
+                ExerciseId = result.ExerciseId
+            };
         }
 
         public async Task<ProgramDayExerciseServiceModel> DeleteAsync(string id)
@@ -47,7 +55,7 @@ namespace MyFitnessJourney.Service.ProgramDayExercise
                     Id = pde.Id,
                     MaxReps = pde.MaxReps,
                     MinReps = pde.MinReps,
-                    SetsCount = pde.SetsCount,
+                    Sets = pde.SetsCount,
                     WorkoutDayId = pde.WorkoutDayId,
                     ExerciseId = pde.ExerciseId
                 });
@@ -62,11 +70,27 @@ namespace MyFitnessJourney.Service.ProgramDayExercise
                     Id = pde.Id,
                     MaxReps = pde.MaxReps,
                     MinReps = pde.MinReps,
-                    SetsCount = pde.SetsCount,
+                    Sets = pde.SetsCount,
                     WorkoutDayId = pde.WorkoutDayId,
                     ExerciseId = pde.ExerciseId
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        public List<ProgramDayExerciseServiceModel> GetByWorkoutDayId(string workoutDayId)
+        {
+            return programDayExerciseRepository.GetAllAsNoTracking()
+                .Where(pde => pde.WorkoutDayId == workoutDayId)
+                .Select(pde => new ProgramDayExerciseServiceModel
+                {
+                    Id = pde.Id,
+                    MaxReps = pde.MaxReps,
+                    MinReps = pde.MinReps,
+                    Sets = pde.SetsCount,
+                    WorkoutDayId = pde.WorkoutDayId,
+                    ExerciseId = pde.ExerciseId
+                })
+                .ToList();
         }
 
         public async Task<ProgramDayExerciseServiceModel> UpdateAsync(string id, ProgramDayExerciseServiceModel model)

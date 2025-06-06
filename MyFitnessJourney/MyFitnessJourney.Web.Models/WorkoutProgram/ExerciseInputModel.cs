@@ -9,6 +9,7 @@ namespace MyFitnessJourney.Web.Models.WorkoutProgram
 {
     public class ExerciseInputModel
     {
+        public string ExerciseId { get; set; }
         public string Name { get; set; }
         public int Sets { get; set; }
         public int RepsMin { get; set; }

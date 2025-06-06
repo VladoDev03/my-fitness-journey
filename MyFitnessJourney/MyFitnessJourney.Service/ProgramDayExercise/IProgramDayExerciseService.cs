@@ -9,5 +9,6 @@ namespace MyFitnessJourney.Service.ProgramDayExercise
 {
     public interface IProgramDayExerciseService : IGenericService<Data.Models.ProgramDayExercise, ProgramDayExerciseServiceModel>
     {
+        List<ProgramDayExerciseServiceModel> GetByWorkoutDayId(string workoutDayId);
     }
 }

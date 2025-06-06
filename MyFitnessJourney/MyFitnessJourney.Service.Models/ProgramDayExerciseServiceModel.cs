@@ -10,7 +10,7 @@ namespace MyFitnessJourney.Service.Models
     {
         public int MaxReps { get; set; }
         public int MinReps { get; set; }
-        public int SetsCount { get; set; }
+        public int Sets { get; set; }
         public string WorkoutDayId { get; set; }
         public string ExerciseId { get; set; }
     }

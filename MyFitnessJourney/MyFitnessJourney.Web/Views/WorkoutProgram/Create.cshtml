@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Create Training Program";
-    var exercisesJson = System.Text.Json.JsonSerializer.Serialize(Model.Select(x => x.CapitalizedName).ToList());
+
+    // Създай JSON със списък от обекти с id и име
+    var exercisesJson = System.Text.Json.JsonSerializer.Serialize(Model.Select(x => new { id = x.Id, name = x.CapitalizedName }).ToList());
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -18,18 +20,19 @@
 
             <div class="exercisesContainer">
                 <div class="exercise-row" style="margin-bottom:10px;">
-                    <select name="Days[0].Exercises[0].Name" required>
+                    <select class="exerciseSelect" name="Days[0].Exercises[0].Name" required>
                         <option value="">-- Select Exercise --</option>
                         @foreach (var exercise in Model)
                         {
-                            <option value="@exercise.CapitalizedName">@exercise.CapitalizedName</option>
+                            <option value="@exercise.CapitalizedName" data-id="@exercise.Id">@exercise.CapitalizedName</option>
                         }
                     </select>
 
+                    <!-- Скрит input за ExerciseId -->
+                    <input type="hidden" name="Days[0].Exercises[0].ExerciseId" value="" class="exerciseIdInput" />
+
                     <input type="number" name="Days[0].Exercises[0].Sets" min="1" placeholder="Sets" required style="width:70px; margin-left:5px;" />
-
                     <input type="number" name="Days[0].Exercises[0].RepsMin" min="1" placeholder="Min Reps" required style="width:70px; margin-left:5px;" />
-
                     <input type="number" name="Days[0].Exercises[0].RepsMax" min="1" placeholder="Max Reps" required style="width:70px; margin-left:5px;" />
 
                     <button type="button" class="removeExerciseBtn" style="margin-left: 10px; color: red;">Remove Exercise</button>
@@ -37,7 +40,6 @@
             </div>
 
             <button type="button" class="addExerciseBtn" style="margin-top:5px;">Add Exercise</button>
-
             <button type="button" class="removeDayBtn" style="margin-left: 10px; color: red;">Remove Day</button>
         </div>
     </div>
@@ -60,6 +62,16 @@
             const daysContainer = document.getElementById('daysContainer');
             const addDayBtn = document.getElementById('addDayBtn');
 
+            // Обновяване на скритите input-и с ID на упражнението
+            function updateExerciseIds() {
+                const selects = document.querySelectorAll('.exerciseSelect');
+                selects.forEach(select => {
+                    const selectedOption = select.options[select.selectedIndex];
+                    const exerciseIdInput = select.parentElement.querySelector('.exerciseIdInput');
+                    exerciseIdInput.value = selectedOption ? selectedOption.dataset.id || '' : '';
+                });
+            }
+
             function addExercise(dayBlock, dayIdx) {
                 const exercisesContainer = dayBlock.querySelector('.exercisesContainer');
                 const exerciseCount = exercisesContainer.querySelectorAll('.exercise-row').length;
@@ -69,6 +81,7 @@
                 div.style.marginBottom = '10px';
 
                 const select = document.createElement('select');
+                select.classList.add('exerciseSelect');
                 select.name = `Days[${dayIdx}].Exercises[${exerciseCount}].Name`;
                 select.required = true;
 
@@ -79,10 +92,18 @@
 
                 exercises.forEach(ex => {
                     const option = document.createElement('option');
-                    option.value = ex;
-                    option.text = ex;
+                    option.value = ex.name;
+                    option.text = ex.name;
+                    option.dataset.id = ex.id;
                     select.appendChild(option);
                 });
+
+                // Скрит input за ExerciseId
+                const exerciseIdInput = document.createElement('input');
+                exerciseIdInput.type = 'hidden';
+                exerciseIdInput.name = `Days[${dayIdx}].Exercises[${exerciseCount}].ExerciseId`;
+                exerciseIdInput.classList.add('exerciseIdInput');
+                exerciseIdInput.value = "";
 
                 const setsInput = document.createElement('input');
                 setsInput.type = 'number';
@@ -118,12 +139,10 @@
                 removeExerciseBtn.style.color = 'red';
                 removeExerciseBtn.textContent = 'Remove Exercise';
 
-                removeExerciseBtn.addEventListener('click', () => {
-                    div.remove();
-                    updateDayNamesAndIndexes();
-                });
+                select.addEventListener('change', updateExerciseIds);
 
                 div.appendChild(select);
+                div.appendChild(exerciseIdInput);
                 div.appendChild(setsInput);
                 div.appendChild(repsMinInput);
                 div.appendChild(repsMaxInput);
@@ -142,7 +161,7 @@
                         heading.textContent = `Day ${index + 1}`;
                     }
 
-                    let hiddenDayNameInput = dayBlock.querySelector('input[name^="Days"][name$=".DayName"]');
+                    let hiddenDayNameInput = dayBlock.querySelector('input[name$=".DayName"]');
                     if (!hiddenDayNameInput) {
                         hiddenDayNameInput = document.createElement('input');
                         hiddenDayNameInput.type = 'hidden';
@@ -165,6 +184,7 @@
                 });
 
                 dayIndex = dayBlocks.length;
+                updateExerciseIds();
             }
 
             function addDay() {
@@ -212,11 +232,17 @@
                 dayDiv.appendChild(removeDayBtn);
 
                 daysContainer.appendChild(dayDiv);
-
                 dayIndex++;
+                updateExerciseIds();
             }
 
             addDayBtn.addEventListener('click', addDay);
+
+            daysContainer.addEventListener('change', function (e) {
+                if (e.target.classList.contains('exerciseSelect')) {
+                    updateExerciseIds();
+                }
+            });
 
             daysContainer.addEventListener('click', function (e) {
                 if (e.target.classList.contains('removeExerciseBtn')) {
@@ -236,8 +262,12 @@
                 }
             });
 
-            updateDayNamesAndIndexes();
+            // Начално обновяване на id-тата
+            document.querySelectorAll('.exerciseSelect').forEach(select => {
+                select.addEventListener('change', updateExerciseIds);
+            });
 
+            updateDayNamesAndIndexes();
         })();
     </script>
 }

@@ -14,7 +14,7 @@ namespace MyFitnessJourney.Web.Models.WorkoutProgram
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Day:");
+            sb.AppendLine(DayName);
             foreach (var exercise in Exercises)
             {
                 sb.AppendLine(exercise.ToString());

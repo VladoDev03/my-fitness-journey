@@ -9,5 +9,6 @@ namespace MyFitnessJourney.Service.WorkoutProgram
 {
     public interface IWorkoutProgramService : IGenericService<Data.Models.WorkoutProgram, WorkoutProgramServiceModel>
     {
+        List<WorkoutProgramServiceModel> GetAllByUserId(string userId);
     }
 }

@@ -26,9 +26,14 @@ namespace MyFitnessJourney.Service.WorkoutDay
                 WorkoutProgramId = model.WorkoutProgramId,
             };
 
-            await workoutDayRepository.CreateAsync(workoutDay);
+            Data.Models.WorkoutDay result = await workoutDayRepository.CreateAsync(workoutDay);
 
-            return model;
+            return new WorkoutDayServiceModel
+            {
+                Id = result.Id,
+                Name = result.Name,
+                WorkoutProgramId = result.WorkoutProgramId,
+            };
         }
 
         public async Task<WorkoutDayServiceModel> DeleteAsync(string id)
@@ -58,6 +63,19 @@ namespace MyFitnessJourney.Service.WorkoutDay
                     WorkoutProgramId = wd.WorkoutProgramId,
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        public List<WorkoutDayServiceModel> GetByProgramId(string programId)
+        {
+            return workoutDayRepository.GetAll()
+                .Where(wd => wd.WorkoutProgramId == programId)
+                .Select(wd => new WorkoutDayServiceModel
+                {
+                    Id = wd.Id,
+                    Name = wd.Name,
+                    WorkoutProgramId = wd.WorkoutProgramId,
+                })
+                .ToList();
         }
 
         public async Task<WorkoutDayServiceModel> UpdateAsync(string id, WorkoutDayServiceModel model)

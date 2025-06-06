@@ -23,12 +23,16 @@ namespace MyFitnessJourney.Service.WorkoutProgram
         {
             Data.Models.WorkoutProgram workoutProgram = new Data.Models.WorkoutProgram
             {
-                UserId = model.UserId,
+                UserId = model.UserId
             };
 
-            await workoutProgramRepository.CreateAsync(workoutProgram);
+            Data.Models.WorkoutProgram result = await workoutProgramRepository.CreateAsync(workoutProgram);
 
-            return model;
+            return new WorkoutProgramServiceModel
+            {
+                Id = result.Id,
+                UserId = result.UserId
+            };
         }
 
         public async Task<WorkoutProgramServiceModel> DeleteAsync(string id)
@@ -44,6 +48,18 @@ namespace MyFitnessJourney.Service.WorkoutProgram
                     Id = wp.Id,
                     UserId = wp.UserId,
                 });
+        }
+
+        public List<WorkoutProgramServiceModel> GetAllByUserId(string userId)
+        {
+            return workoutProgramRepository.GetAllAsNoTracking()
+                .Where(wp => wp.UserId == userId)
+                .Select(wp => new WorkoutProgramServiceModel
+                {
+                    Id = wp.Id,
+                    UserId = wp.UserId,
+                })
+                .ToList();
         }
 
         public async Task<WorkoutProgramServiceModel> GetByIdAsync(string id)
