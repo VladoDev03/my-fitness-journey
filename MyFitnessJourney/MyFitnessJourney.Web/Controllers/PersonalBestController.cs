@@ -58,6 +58,7 @@ namespace MyFitnessJourney.Web.Controllers
                 .GetUserPersonalBestsExercise(userId, exerciseId)
                 .Select(pb => new PersonalBestViewModel
                 {
+                    Id = pb.Id.ToString(),
                     Exercise = pb.Exercise.Name,
                     Weight = pb.Weight,
                     Date = pb.Date.ToShortDateString()
@@ -104,6 +105,14 @@ namespace MyFitnessJourney.Web.Controllers
                     },
                     personalBest.Exercise
                 );
+
+            return RedirectToAction("GetAll", "PersonalBest");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _personalBestService.DeleteAsync(id);
 
             return RedirectToAction("GetAll", "PersonalBest");
         }

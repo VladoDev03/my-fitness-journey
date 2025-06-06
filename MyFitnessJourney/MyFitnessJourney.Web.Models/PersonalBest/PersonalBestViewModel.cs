@@ -8,6 +8,8 @@ namespace MyFitnessJourney.Web.Models.PersonalBest
 {
     public class PersonalBestViewModel
     {
+        public string Id { get; set; }
+
         public string Exercise { get; set; }
 
         public string ExerciseId { get; set; }

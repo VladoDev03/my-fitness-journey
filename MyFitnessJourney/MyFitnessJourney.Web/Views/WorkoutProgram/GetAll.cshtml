@@ -4,49 +4,57 @@
     ViewData["Title"] = "All Workout Programs";
 }
 
-<h1>@ViewData["Title"]</h1>
-
 @{
-    int count = 1;
-}
+    if (Model.Count == 0)
+    {
+        <h1>You don't have any programs yet.</h1>
+    }
+    else
+    {
+        <h1>@ViewData["Title"]</h1>
 
-@foreach (var program in Model)
-{
-    <div class="program">
-        <h2>Program @count:</h2>
+        int count = 1;
 
-        @foreach (var day in program.Days)
+        @foreach (var program in Model)
         {
-            <div class="day">
-                <h3>Day: @day.DayName</h3>
+            <div class="program">
+                <h2>Program @count:</h2>
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Exercise</th>
-                            <th>Sets</th>
-                            <th>Min Reps</th>
-                            <th>Max Reps</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var exercise in day.Exercises)
-                        {
-                            <tr>
-                                <td>@exercise.Name</td>
-                                <td>@exercise.Sets</td>
-                                <td>@exercise.RepsMin</td>
-                                <td>@exercise.RepsMax</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                @foreach (var day in program.Days)
+                {
+                    <div class="day">
+                        <h3>Day: @day.DayName</h3>
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Exercise</th>
+                                    <th>Sets</th>
+                                    <th>Min Reps</th>
+                                    <th>Max Reps</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exercise in day.Exercises)
+                                {
+                                    <tr>
+                                        <td>@exercise.Name</td>
+                                        <td>@exercise.Sets</td>
+                                        <td>@exercise.RepsMin</td>
+                                        <td>@exercise.RepsMax</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
+            <hr />
+
+            count++;
+            <br />
+            <br />
+            <br />
         }
-    </div>
-    <hr />
-    count++;
-    <br />
-    <br />
-    <br />
+    }
 }

@@ -47,7 +47,16 @@ namespace MyFitnessJourney.Service.PersonalBest
 
         public async Task<PersonalBestServiceModel> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            Data.Models.PersonalBest personalBest = await personalBestRepository.GetAllAsNoTracking().FirstOrDefaultAsync(pb => pb.Id == id);
+
+            if (personalBest == null)
+            {
+                throw new KeyNotFoundException("Personal best not found.");
+            }
+
+            await personalBestRepository.DeleteAsync(personalBest);
+
+            return personalBest.ToServiceModel();
         }
 
         public IQueryable<PersonalBestServiceModel> GetAll()
