@@ -28,13 +28,16 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Exercise" asp-action="Create">Add Exercise</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="PersonalBest" asp-action="GetAll">My PRs</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="PersonalBest" asp-action="Create">Add PR</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Exercise" asp-action="Create">Add Exercise</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="WorkoutProgram" asp-action="GetAll">My Programs</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="WorkoutProgram" asp-action="Create">Create Program</a>

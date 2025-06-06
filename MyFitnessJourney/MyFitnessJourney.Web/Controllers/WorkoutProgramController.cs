@@ -8,6 +8,7 @@ using MyFitnessJourney.Service.WorkoutProgram;
 using MyFitnessJourney.Web.Models.Exercise;
 using MyFitnessJourney.Web.Models.PersonalBest;
 using MyFitnessJourney.Web.Models.WorkoutProgram;
+using System.Collections.Generic;
 
 namespace MyFitnessJourney.Web.Controllers
 {
@@ -30,29 +31,62 @@ namespace MyFitnessJourney.Web.Controllers
             _workoutDayService = workoutDayService;
         }
 
-        //[Authorize]
-        //[HttpGet]
-        //public IActionResult GetAll()
-        //{
-        //    string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-        //    List<WorkoutProgramServiceModel> workoutProgramServiceModels = _workoutProgramService
-        //        .GetAllByUserId(userId)
-        //        .ToList();
+            List<WorkoutProgramServiceModel> workoutProgramServiceModels = _workoutProgramService
+                .GetAllByUserId(userId)
+                .ToList();
 
-        //    foreach (var programs in workoutProgramServiceModels)
-        //    {
-        //        List<WorkoutDayServiceModel> workoutDays = _workoutDayService
-        //            .GetByProgramId(programs.Id);
+            List<CreateWorkoutProgramModel> result = new List<CreateWorkoutProgramModel>();
 
-        //        foreach (var day in workoutDays)
-        //        {
-        //            List<ProgramDayExerciseServiceModel> exercises = _programDayExerciseService
-        //                .GetByWorkoutDayId(day.Id)
-        //                .ToList();
-        //        }
-        //    }
-        //}
+            foreach (var wp in workoutProgramServiceModels)
+            {
+                CreateWorkoutProgramModel programModel = new CreateWorkoutProgramModel
+                {
+                    Days = new List<DayViewModel>()
+                };
+
+                List<WorkoutDayServiceModel> days = _workoutDayService.GetByProgramId(wp.Id);
+
+                foreach (var day in days)
+                {
+                    DayViewModel dayViewModel = new DayViewModel
+                    {
+                        DayName = day.Name,
+                        Exercises = new List<ExerciseInputModel>()
+                    };
+
+                    List<ProgramDayExerciseServiceModel> exercises = _programDayExerciseService
+                        .GetByWorkoutDayId(day.Id)
+                        .ToList();
+
+                    foreach (var exercise in exercises)
+                    {
+                        var exerciseData = await _exerciseService.GetByIdAsync(exercise.ExerciseId);
+
+                        ExerciseInputModel exerciseViewModel = new ExerciseInputModel
+                        {
+                            Name = exerciseData.Name,
+                            RepsMax = exercise.MaxReps,
+                            RepsMin = exercise.MinReps,
+                            Sets = exercise.Sets
+                        };
+
+                        dayViewModel.Exercises.Add(exerciseViewModel);
+                    }
+
+                    programModel.Days.Add(dayViewModel);
+                }
+
+                result.Add(programModel);
+            }
+
+            return View(result);
+        }
 
         [Authorize]
         [HttpGet]
@@ -74,8 +108,6 @@ namespace MyFitnessJourney.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateWorkoutProgramModel model)
         {
-            Console.WriteLine(model);
-
             string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             WorkoutProgramServiceModel program = await _workoutProgramService.CreateAsync(new WorkoutProgramServiceModel

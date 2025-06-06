@@ -1,0 +1,52 @@
+﻿@model List<MyFitnessJourney.Web.Models.WorkoutProgram.CreateWorkoutProgramModel>
+
+@{
+    ViewData["Title"] = "All Workout Programs";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@{
+    int count = 1;
+}
+
+@foreach (var program in Model)
+{
+    <div class="program">
+        <h2>Program @count:</h2>
+
+        @foreach (var day in program.Days)
+        {
+            <div class="day">
+                <h3>Day: @day.DayName</h3>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Exercise</th>
+                            <th>Sets</th>
+                            <th>Min Reps</th>
+                            <th>Max Reps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var exercise in day.Exercises)
+                        {
+                            <tr>
+                                <td>@exercise.Name</td>
+                                <td>@exercise.Sets</td>
+                                <td>@exercise.RepsMin</td>
+                                <td>@exercise.RepsMax</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+    <hr />
+    count++;
+    <br />
+    <br />
+    <br />
+}
