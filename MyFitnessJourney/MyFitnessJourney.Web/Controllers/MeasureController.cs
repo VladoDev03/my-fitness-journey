@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFitnessJourney.Service.Measure;
-using MyFitnessJourney.Service.Models;
+using MyFitnessJourney.Service.Models.Measure;
 using System.Security.Claims;
 
 namespace MyFitnessJourney.Web.Controllers

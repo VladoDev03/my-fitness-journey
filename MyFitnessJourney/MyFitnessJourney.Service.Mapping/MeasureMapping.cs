@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFitnessJourney.Service.Models.Measure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,14 @@ namespace MyFitnessJourney.Service.Mapping
 {
     public static class MeasureMapping
     {
-        public static Service.Models.MeasureServiceModel ToServiceModel(this Data.Models.Measure measure)
+        public static MeasureServiceModel ToServiceModel(this Data.Models.Measure measure)
         {
             if (measure == null)
             {
                 return null;
             }
 
-            return new Service.Models.MeasureServiceModel
+            return new Service.Models.Measure.MeasureServiceModel
             {
                 Id = measure.Id,
                 BodyWeight = measure.BodyWeight,
@@ -23,7 +24,7 @@ namespace MyFitnessJourney.Service.Mapping
                 UserId = measure.UserId
             };
         }
-        public static Data.Models.Measure ToEntity(this Service.Models.MeasureServiceModel measureServiceModel)
+        public static Data.Models.Measure ToEntity(this MeasureServiceModel measureServiceModel)
         {
             if (measureServiceModel == null)
             {

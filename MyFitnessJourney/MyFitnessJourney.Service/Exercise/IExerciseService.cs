@@ -1,4 +1,4 @@
-﻿using MyFitnessJourney.Service.Models;
+﻿using MyFitnessJourney.Service.Models.Exercise;
 
 namespace MyFitnessJourney.Service.Exercise
 {

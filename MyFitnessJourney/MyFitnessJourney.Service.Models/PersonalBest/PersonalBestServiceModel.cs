@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MyFitnessJourney.Service.Models.Exercise;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFitnessJourney.Service.Models
+namespace MyFitnessJourney.Service.Models.PersonalBest
 {
     public class PersonalBestServiceModel : BaseServiceModel
     {

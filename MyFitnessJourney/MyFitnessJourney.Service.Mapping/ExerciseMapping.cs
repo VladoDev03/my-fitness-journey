@@ -1,4 +1,4 @@
-﻿using MyFitnessJourney.Service.Models;
+﻿using MyFitnessJourney.Service.Models.Exercise;
 using System;
 using System.Collections.Generic;
 using System.Linq;

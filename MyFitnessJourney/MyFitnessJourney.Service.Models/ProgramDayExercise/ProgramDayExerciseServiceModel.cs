@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFitnessJourney.Service.Models
+namespace MyFitnessJourney.Service.Models.ProgramDayExercise
 {
     public class ProgramDayExerciseServiceModel : BaseServiceModel
     {

@@ -1,5 +1,4 @@
 ﻿using MyFitnessJourney.Data.Repositories;
-using MyFitnessJourney.Service.Models;
 using MyFitnessJourney.Service.Mapping;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MyFitnessJourney.Service.Exercise;
 using Microsoft.EntityFrameworkCore;
+using MyFitnessJourney.Service.Models.PersonalBest;
 
 namespace MyFitnessJourney.Service.PersonalBest
 {

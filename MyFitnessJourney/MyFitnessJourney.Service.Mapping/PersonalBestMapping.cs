@@ -1,5 +1,5 @@
-﻿using MyFitnessJourney.Service.Models;
-using MyFitnessJourney.Data.Models;
+﻿using MyFitnessJourney.Data.Models;
+using MyFitnessJourney.Service.Models.PersonalBest;
 
 namespace MyFitnessJourney.Service.Mapping
 {

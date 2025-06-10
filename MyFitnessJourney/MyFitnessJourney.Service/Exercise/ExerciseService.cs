@@ -1,5 +1,4 @@
 ﻿using MyFitnessJourney.Data.Repositories;
-using MyFitnessJourney.Service.Models;
 using MyFitnessJourney.Service.Mapping;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MyFitnessJourney.Service.Models.Exercise;
 
 namespace MyFitnessJourney.Service.Exercise
 {

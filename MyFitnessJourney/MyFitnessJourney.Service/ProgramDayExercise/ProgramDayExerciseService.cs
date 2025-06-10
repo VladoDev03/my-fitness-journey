@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyFitnessJourney.Data.Repositories;
-using MyFitnessJourney.Service.Models;
+using MyFitnessJourney.Service.Models.ProgramDayExercise;
 using System;
 using System.Collections.Generic;
 using System.Linq;

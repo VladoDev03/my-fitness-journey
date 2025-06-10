@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFitnessJourney.Service.Exercise;
-using MyFitnessJourney.Service.Models;
+using MyFitnessJourney.Service.Models.ProgramDayExercise;
+using MyFitnessJourney.Service.Models.WorkoutDay;
+using MyFitnessJourney.Service.Models.WorkoutProgram;
 using MyFitnessJourney.Service.ProgramDayExercise;
 using MyFitnessJourney.Service.WorkoutDay;
 using MyFitnessJourney.Service.WorkoutProgram;
@@ -37,53 +39,7 @@ namespace MyFitnessJourney.Web.Controllers
         {
             string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            List<WorkoutProgramServiceModel> workoutProgramServiceModels = _workoutProgramService
-                .GetAllByUserId(userId)
-                .ToList();
-
-            List<CreateWorkoutProgramModel> result = new List<CreateWorkoutProgramModel>();
-
-            foreach (var wp in workoutProgramServiceModels)
-            {
-                CreateWorkoutProgramModel programModel = new CreateWorkoutProgramModel
-                {
-                    Days = new List<DayViewModel>()
-                };
-
-                List<WorkoutDayServiceModel> days = _workoutDayService.GetByProgramId(wp.Id);
-
-                foreach (var day in days)
-                {
-                    DayViewModel dayViewModel = new DayViewModel
-                    {
-                        DayName = day.Name,
-                        Exercises = new List<ExerciseInputModel>()
-                    };
-
-                    List<ProgramDayExerciseServiceModel> exercises = _programDayExerciseService
-                        .GetByWorkoutDayId(day.Id)
-                        .ToList();
-
-                    foreach (var exercise in exercises)
-                    {
-                        var exerciseData = await _exerciseService.GetByIdAsync(exercise.ExerciseId);
-
-                        ExerciseInputModel exerciseViewModel = new ExerciseInputModel
-                        {
-                            Name = exerciseData.Name,
-                            RepsMax = exercise.MaxReps,
-                            RepsMin = exercise.MinReps,
-                            Sets = exercise.Sets
-                        };
-
-                        dayViewModel.Exercises.Add(exerciseViewModel);
-                    }
-
-                    programModel.Days.Add(dayViewModel);
-                }
-
-                result.Add(programModel);
-            }
+            List<CreateWorkoutProgramModelServiceModel> result = await _workoutProgramService.FullGet(userId);
 
             return View(result);
         }
@@ -104,35 +60,11 @@ namespace MyFitnessJourney.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateWorkoutProgramModel model)
+        public async Task<IActionResult> Create(CreateWorkoutProgramModelServiceModel model)
         {
             string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            WorkoutProgramServiceModel program = await _workoutProgramService.CreateAsync(new WorkoutProgramServiceModel
-            {
-                UserId = userId
-            });
-
-            foreach (var day in model.Days)
-            {
-                WorkoutDayServiceModel wDay = await _workoutDayService.CreateAsync(new WorkoutDayServiceModel
-                {
-                    Name = day.DayName,
-                    WorkoutProgramId = program.Id
-                });
-
-                foreach (var exercise in day.Exercises)
-                {
-                    ProgramDayExerciseServiceModel result = await _programDayExerciseService.CreateAsync(new ProgramDayExerciseServiceModel
-                    {
-                        ExerciseId = exercise.ExerciseId,
-                        Sets = exercise.Sets,
-                        MinReps = exercise.RepsMin,
-                        MaxReps = exercise.RepsMax,
-                        WorkoutDayId = wDay.Id
-                    });
-                }
-            }
+            await _workoutProgramService.FullCreate(model, userId);
 
             if (!ModelState.IsValid)
             {

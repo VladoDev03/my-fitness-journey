@@ -1,4 +1,4 @@
-﻿using MyFitnessJourney.Service.Models;
+﻿using MyFitnessJourney.Service.Models.PersonalBest;
 
 namespace MyFitnessJourney.Service.PersonalBest
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFitnessJourney.Service.Exercise;
-using MyFitnessJourney.Service.Models;
+using MyFitnessJourney.Service.Models.Exercise;
 using MyFitnessJourney.Web.Models.Exercise;
 
 namespace MyFitnessJourney.Web.Controllers

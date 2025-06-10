@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyFitnessJourney.Data.Models;
 using MyFitnessJourney.Service.Exercise;
 using MyFitnessJourney.Service.Models;
+using MyFitnessJourney.Service.Models.PersonalBest;
 using MyFitnessJourney.Service.PersonalBest;
 using MyFitnessJourney.Web.Models.Exercise;
 using MyFitnessJourney.Web.Models.PersonalBest;
