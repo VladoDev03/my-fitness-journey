@@ -17,9 +17,7 @@
                 <td style="padding: 10px; border: 1px solid #ddd;">@item.Weight</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">@item.Date</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">
-                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
-                        <a class="text-danger" asp-action="Delete" asp-controller="PersonalBest" asp-route-id="@item.Id">Delete</a>
-                    </form>
+                    <a asp-action="Delete" asp-controller="PersonalBest" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }

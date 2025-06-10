@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 namespace MyFitnessJourney.Web.Controllers
 {
+    [Authorize]
     public class WorkoutProgramController : Controller
     {
         private readonly IExerciseService _exerciseService;
@@ -31,7 +32,6 @@ namespace MyFitnessJourney.Web.Controllers
             _workoutDayService = workoutDayService;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -88,7 +88,6 @@ namespace MyFitnessJourney.Web.Controllers
             return View(result);
         }
 
-        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
@@ -104,7 +103,6 @@ namespace MyFitnessJourney.Web.Controllers
             return View(exercises);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateWorkoutProgramModel model)
         {

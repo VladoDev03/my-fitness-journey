@@ -16,6 +16,8 @@ public class MyFitnessJourneyDbContext : IdentityDbContext
 
     public DbSet<WorkoutProgram> WorkoutPrograms { get; set; }
 
+    public DbSet<Measure> Measurements { get; set; }
+
     public MyFitnessJourneyDbContext(DbContextOptions<MyFitnessJourneyDbContext> options)
         : base(options)
     {

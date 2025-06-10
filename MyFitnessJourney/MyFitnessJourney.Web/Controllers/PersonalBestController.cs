@@ -9,6 +9,7 @@ using MyFitnessJourney.Web.Models.PersonalBest;
 
 namespace MyFitnessJourney.Web.Controllers
 {
+    [Authorize]
     public class PersonalBestController : Controller
     {
         private readonly IPersonalBestService _personalBestService;
@@ -22,7 +23,6 @@ namespace MyFitnessJourney.Web.Controllers
             _exerciseService = exerciseService;
         }
 
-        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -43,7 +43,6 @@ namespace MyFitnessJourney.Web.Controllers
             return View(bests);
         }
 
-        [Authorize]
         [HttpGet("GetPerExercise/{exerciseId}")]
         public IActionResult GetPerExercise(string exerciseId)
         {
@@ -69,7 +68,6 @@ namespace MyFitnessJourney.Web.Controllers
             return View(bests);
         }
 
-        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
@@ -85,7 +83,6 @@ namespace MyFitnessJourney.Web.Controllers
             return View(exercises);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreatePersonalBestModel personalBest)
         {
@@ -109,10 +106,16 @@ namespace MyFitnessJourney.Web.Controllers
             return RedirectToAction("GetAll", "PersonalBest");
         }
 
-        [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
             await _personalBestService.DeleteAsync(id);
+
+            string referer = Request.Headers["Referer"].ToString();
+
+            if (!string.IsNullOrEmpty(referer))
+            {
+                return Redirect(referer);
+            }
 
             return RedirectToAction("GetAll", "PersonalBest");
         }

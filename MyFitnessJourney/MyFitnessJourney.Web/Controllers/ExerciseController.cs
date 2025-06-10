@@ -6,6 +6,7 @@ using MyFitnessJourney.Web.Models.Exercise;
 
 namespace MyFitnessJourney.Web.Controllers
 {
+    [Authorize]
     public class ExerciseController : Controller
     {
         private readonly IExerciseService _exerciseService;
@@ -15,14 +16,12 @@ namespace MyFitnessJourney.Web.Controllers
             _exerciseService = exerciseService;
         }
 
-        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateExerciseModel exercise)
         {

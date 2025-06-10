@@ -1,0 +1,40 @@
+﻿@model IEnumerable<MyFitnessJourney.Service.Models.MeasureServiceModel>
+
+@{
+    ViewData["Title"] = "Measures List";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Body Weight (kg)</th>
+            <th>Measure Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var measure in Model)
+            {
+                <tr>
+                    <td>@measure.BodyWeight</td>
+                    <td>@measure.MeasureDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@measure.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">No measures available.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Add New Measure</a>

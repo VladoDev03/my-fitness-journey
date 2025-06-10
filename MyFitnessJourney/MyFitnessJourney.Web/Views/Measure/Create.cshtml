@@ -1,0 +1,25 @@
+﻿@model MyFitnessJourney.Service.Models.MeasureServiceModel
+
+@{
+    ViewData["Title"] = "Add Measure";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="BodyWeight" class="control-label"></label>
+        <input asp-for="BodyWeight" class="form-control" />
+        <span asp-validation-for="BodyWeight" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MeasureDate" class="control-label"></label>
+        <input asp-for="MeasureDate" class="form-control" type="date" />
+        <span asp-validation-for="MeasureDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>

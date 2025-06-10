@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Create Training Program";
 
-    // Създай JSON със списък от обекти с id и име
     var exercisesJson = System.Text.Json.JsonSerializer.Serialize(Model.Select(x => new { id = x.Id, name = x.CapitalizedName }).ToList());
 }
 
@@ -28,7 +27,6 @@
                         }
                     </select>
 
-                    <!-- Скрит input за ExerciseId -->
                     <input type="hidden" name="Days[0].Exercises[0].ExerciseId" value="" class="exerciseIdInput" />
 
                     <input type="number" name="Days[0].Exercises[0].Sets" min="1" placeholder="Sets" required style="width:70px; margin-left:5px;" />
@@ -62,7 +60,6 @@
             const daysContainer = document.getElementById('daysContainer');
             const addDayBtn = document.getElementById('addDayBtn');
 
-            // Обновяване на скритите input-и с ID на упражнението
             function updateExerciseIds() {
                 const selects = document.querySelectorAll('.exerciseSelect');
                 selects.forEach(select => {
@@ -98,7 +95,6 @@
                     select.appendChild(option);
                 });
 
-                // Скрит input за ExerciseId
                 const exerciseIdInput = document.createElement('input');
                 exerciseIdInput.type = 'hidden';
                 exerciseIdInput.name = `Days[${dayIdx}].Exercises[${exerciseCount}].ExerciseId`;
@@ -262,7 +258,6 @@
                 }
             });
 
-            // Начално обновяване на id-тата
             document.querySelectorAll('.exerciseSelect').forEach(select => {
                 select.addEventListener('change', updateExerciseIds);
             });
