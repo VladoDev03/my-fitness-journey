@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFitnessJourney.Service.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,8 @@ namespace MyFitnessJourney.Web.Models.PersonalBest
         public string Exercise { get; set; }
 
         public double Weight { get; set; }
+
+        [NotInFuture]
+        public DateTime Date { get; set; }
     }
 }

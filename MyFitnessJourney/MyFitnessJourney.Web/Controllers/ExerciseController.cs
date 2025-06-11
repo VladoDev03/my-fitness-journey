@@ -25,6 +25,11 @@ namespace MyFitnessJourney.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateExerciseModel exercise)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(exercise);
+            }
+
             ExerciseServiceModel exerciseServiceModel = new ExerciseServiceModel
             {
                 Name = exercise.Name,

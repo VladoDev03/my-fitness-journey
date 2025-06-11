@@ -37,6 +37,15 @@ namespace MyFitnessJourney.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(MeasureServiceModel measure)
         {
+            Console.WriteLine(ModelState.IsValid);
+
+            if (!ModelState.IsValid)
+            {
+                return View(measure);
+            }
+
+            Console.WriteLine("Valid model");
+
             measure.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             await _measureService.CreateAsync(measure);
