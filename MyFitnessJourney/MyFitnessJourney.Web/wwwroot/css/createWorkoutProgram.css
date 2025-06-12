@@ -1,0 +1,94 @@
+﻿.day-block {
+    border: 1px solid #ccc;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.day-block h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.exercisesContainer {
+    margin-bottom: 10px;
+}
+
+.exercise-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.exercise-row select,
+.exercise-row input[type="number"] {
+    padding: 6px 8px;
+    font-size: 14px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin-right: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+}
+
+.exercise-row input[name*="Sets"],
+.exercise-row input[name*="RepsMin"],
+.exercise-row input[name*="RepsMax"] {
+    width: 75px;
+}
+
+.removeExerciseBtn {
+    background: none;
+    border: none;
+    color: #d9534f;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 4px 8px;
+    transition: color 0.2s ease;
+}
+
+.removeExerciseBtn:hover {
+    color: #c12e2a;
+}
+
+.addExerciseBtn,
+.removeDayBtn,
+#addDayBtn {
+    padding: 8px 14px;
+    font-size: 14px;
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.removeDayBtn {
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    margin-left: 10px;
+}
+
+.addExerciseBtn:hover,
+#addDayBtn:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.removeDayBtn:hover {
+    background-color: #c12e2a;
+    border-color: #a71d2a;
+}
+
+.day-block > button {
+    margin-top: 10px;
+}
+
+.addExerciseBtn + .removeDayBtn {
+    margin-left: 10px;
+}

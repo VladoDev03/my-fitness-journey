@@ -127,7 +127,10 @@ namespace MyFitnessJourney.Service.WorkoutProgram
                     Id = wp.Id
                 };
 
-                List<WorkoutDayServiceModel> days = _workoutDayService.GetByProgramId(wp.Id);
+                List<WorkoutDayServiceModel> days = _workoutDayService
+                    .GetByProgramId(wp.Id)
+                    .OrderBy(wd => wd.Name)
+                    .ToList();
 
                 foreach (var day in days)
                 {
