@@ -45,9 +45,11 @@ namespace MyFitnessJourney.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            List<ExerciseViewModel> exercises = _exerciseService
+            WorkoutProgramViewModel result = new WorkoutProgramViewModel();
+
+            result.Exercises = _exerciseService
                 .GetAll()
                 .Select(x => new ExerciseViewModel
                 {
@@ -56,22 +58,17 @@ namespace MyFitnessJourney.Web.Controllers
                 })
                 .ToList();
 
-            return View(exercises);
+            return View(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateWorkoutProgramModelServiceModel model)
+        public async Task<IActionResult> Create(WorkoutProgramViewModel model)
         {
             string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            await _workoutProgramService.FullCreate(model, userId);
+            await _workoutProgramService.FullCreate(model.Program, userId);
 
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(GetAll));
         }
 
         [HttpPost]

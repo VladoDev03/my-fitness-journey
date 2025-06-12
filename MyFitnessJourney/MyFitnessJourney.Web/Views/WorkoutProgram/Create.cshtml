@@ -1,9 +1,9 @@
-﻿@model List<MyFitnessJourney.Web.Models.Exercise.ExerciseViewModel>
+﻿@using MyFitnessJourney.Web.Models.WorkoutProgram
+@model WorkoutProgramViewModel
 
 @{
     ViewData["Title"] = "Create Training Program";
-
-    string exercisesJson = System.Text.Json.JsonSerializer.Serialize(Model.Select(x => new { id = x.Id, name = x.CapitalizedName }).ToList());
+    string exercisesJson = System.Text.Json.JsonSerializer.Serialize(Model.Exercises.Select(x => new { id = x.Id, name = x.CapitalizedName }).ToList());
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -14,24 +14,23 @@
     <div id="daysContainer">
         <div class="day-block" data-day-index="0" style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
             <h3>Day 1</h3>
-
-            <input type="hidden" name="Days[0].DayName" value="Day 1" />
+            <input type="hidden" name="Program.Days[0].DayName" value="Day 1" />
 
             <div class="exercisesContainer">
                 <div class="exercise-row" style="margin-bottom:10px;">
-                    <select class="exerciseSelect" name="Days[0].Exercises[0].Name" required>
+                    <select class="exerciseSelect" name="Program.Days[0].Exercises[0].Name" required>
                         <option value="">-- Select Exercise --</option>
-                        @foreach (var exercise in Model)
+                        @foreach (var exercise in Model.Exercises)
                         {
                             <option value="@exercise.CapitalizedName" data-id="@exercise.Id">@exercise.CapitalizedName</option>
                         }
                     </select>
 
-                    <input type="hidden" name="Days[0].Exercises[0].ExerciseId" value="" class="exerciseIdInput" />
+                    <input type="hidden" name="Program.Days[0].Exercises[0].ExerciseId" value="" class="exerciseIdInput" />
 
-                    <input type="number" name="Days[0].Exercises[0].Sets" min="1" placeholder="Sets" required style="width:70px; margin-left:5px;" />
-                    <input type="number" name="Days[0].Exercises[0].RepsMin" min="1" placeholder="Min Reps" required style="width:70px; margin-left:5px;" />
-                    <input type="number" name="Days[0].Exercises[0].RepsMax" min="1" placeholder="Max Reps" required style="width:70px; margin-left:5px;" />
+                    <input type="number" name="Program.Days[0].Exercises[0].Sets" min="1" placeholder="Sets" required style="width:70px; margin-left:5px;" />
+                    <input type="number" name="Program.Days[0].Exercises[0].RepsMin" min="1" placeholder="Min Reps" required style="width:70px; margin-left:5px;" />
+                    <input type="number" name="Program.Days[0].Exercises[0].RepsMax" min="1" placeholder="Max Reps" required style="width:70px; margin-left:5px;" />
 
                     <button type="button" class="removeExerciseBtn" style="margin-left: 10px; color: red;">Remove Exercise</button>
                 </div>
@@ -64,8 +63,8 @@
                 const selects = document.querySelectorAll('.exerciseSelect');
                 selects.forEach(select => {
                     const selectedOption = select.options[select.selectedIndex];
-                    const exerciseIdInput = select.parentElement.querySelector('.exerciseIdInput');
-                    exerciseIdInput.value = selectedOption ? selectedOption.dataset.id || '' : '';
+                    const exerciseIdInput = select.closest('.exercise-row').querySelector('.exerciseIdInput');
+                    exerciseIdInput.value = selectedOption?.dataset.id || '';
                 });
             }
 
@@ -79,7 +78,7 @@
 
                 const select = document.createElement('select');
                 select.classList.add('exerciseSelect');
-                select.name = `Days[${dayIdx}].Exercises[${exerciseCount}].Name`;
+                select.name = `Program.Days[${dayIdx}].Exercises[${exerciseCount}].Name`;
                 select.required = true;
 
                 const defaultOption = document.createElement('option');
@@ -97,13 +96,13 @@
 
                 const exerciseIdInput = document.createElement('input');
                 exerciseIdInput.type = 'hidden';
-                exerciseIdInput.name = `Days[${dayIdx}].Exercises[${exerciseCount}].ExerciseId`;
+                exerciseIdInput.name = `Program.Days[${dayIdx}].Exercises[${exerciseCount}].ExerciseId`;
                 exerciseIdInput.classList.add('exerciseIdInput');
                 exerciseIdInput.value = "";
 
                 const setsInput = document.createElement('input');
                 setsInput.type = 'number';
-                setsInput.name = `Days[${dayIdx}].Exercises[${exerciseCount}].Sets`;
+                setsInput.name = `Program.Days[${dayIdx}].Exercises[${exerciseCount}].Sets`;
                 setsInput.min = 1;
                 setsInput.placeholder = 'Sets';
                 setsInput.required = true;
@@ -112,7 +111,7 @@
 
                 const repsMinInput = document.createElement('input');
                 repsMinInput.type = 'number';
-                repsMinInput.name = `Days[${dayIdx}].Exercises[${exerciseCount}].RepsMin`;
+                repsMinInput.name = `Program.Days[${dayIdx}].Exercises[${exerciseCount}].RepsMin`;
                 repsMinInput.min = 1;
                 repsMinInput.placeholder = 'Min Reps';
                 repsMinInput.required = true;
@@ -121,7 +120,7 @@
 
                 const repsMaxInput = document.createElement('input');
                 repsMaxInput.type = 'number';
-                repsMaxInput.name = `Days[${dayIdx}].Exercises[${exerciseCount}].RepsMax`;
+                repsMaxInput.name = `Program.Days[${dayIdx}].Exercises[${exerciseCount}].RepsMax`;
                 repsMaxInput.min = 1;
                 repsMaxInput.placeholder = 'Max Reps';
                 repsMaxInput.required = true;
@@ -134,6 +133,7 @@
                 removeExerciseBtn.style.marginLeft = '10px';
                 removeExerciseBtn.style.color = 'red';
                 removeExerciseBtn.textContent = 'Remove Exercise';
+                removeExerciseBtn.addEventListener('click', () => div.remove());
 
                 select.addEventListener('change', updateExerciseIds);
 
@@ -147,122 +147,77 @@
                 exercisesContainer.appendChild(div);
             }
 
-            function updateDayNamesAndIndexes() {
-                const dayBlocks = daysContainer.querySelectorAll('.day-block');
-                dayBlocks.forEach((dayBlock, index) => {
-                    dayBlock.dataset.dayIndex = index;
-
-                    const heading = dayBlock.querySelector('h3');
-                    if (heading) {
-                        heading.textContent = `Day ${index + 1}`;
-                    }
-
-                    let hiddenDayNameInput = dayBlock.querySelector('input[name$=".DayName"]');
-                    if (!hiddenDayNameInput) {
-                        hiddenDayNameInput = document.createElement('input');
-                        hiddenDayNameInput.type = 'hidden';
-                        dayBlock.appendChild(hiddenDayNameInput);
-                    }
-                    hiddenDayNameInput.name = `Days[${index}].DayName`;
-                    hiddenDayNameInput.value = `Day ${index + 1}`;
-
-                    const exercisesContainer = dayBlock.querySelector('.exercisesContainer');
-                    const exerciseRows = exercisesContainer.querySelectorAll('.exercise-row');
-
-                    exerciseRows.forEach((exerciseRow, exIndex) => {
-                        const inputs = exerciseRow.querySelectorAll('select, input');
-                        inputs.forEach(input => {
-                            const name = input.name;
-                            const newName = name.replace(/Days\[\d+\]\.Exercises\[\d+\]/, `Days[${index}].Exercises[${exIndex}]`);
-                            input.name = newName;
-                        });
-                    });
-                });
-
-                dayIndex = dayBlocks.length;
-                updateExerciseIds();
-            }
-
             function addDay() {
-                if (dayIndex >= maxDays) {
-                    alert("Maximum 7 days allowed.");
-                    return;
-                }
+                if (dayIndex >= maxDays) return;
 
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('day-block');
-                dayDiv.dataset.dayIndex = dayIndex;
-                dayDiv.style.border = "1px solid #ccc";
-                dayDiv.style.padding = "10px";
-                dayDiv.style.marginBottom = "15px";
+                const div = document.createElement('div');
+                div.classList.add('day-block');
+                div.dataset.dayIndex = dayIndex;
+                div.style.border = '1px solid #ccc';
+                div.style.padding = '10px';
+                div.style.marginBottom = '15px';
 
-                const heading = document.createElement('h3');
-                heading.textContent = `Day ${dayIndex + 1}`;
-                dayDiv.appendChild(heading);
+                const dayTitle = document.createElement('h3');
+                dayTitle.textContent = `Day ${dayIndex + 1}`;
 
-                const hiddenDayNameInput = document.createElement('input');
-                hiddenDayNameInput.type = 'hidden';
-                hiddenDayNameInput.name = `Days[${dayIndex}].DayName`;
-                hiddenDayNameInput.value = `Day ${dayIndex + 1}`;
-                dayDiv.appendChild(hiddenDayNameInput);
+                const hiddenDayName = document.createElement('input');
+                hiddenDayName.type = 'hidden';
+                hiddenDayName.name = `Program.Days[${dayIndex}].DayName`;
+                hiddenDayName.value = `Day ${dayIndex + 1}`;
 
                 const exercisesContainer = document.createElement('div');
                 exercisesContainer.classList.add('exercisesContainer');
-                dayDiv.appendChild(exercisesContainer);
 
-                addExercise(dayDiv, dayIndex);
+                div.appendChild(dayTitle);
+                div.appendChild(hiddenDayName);
+                div.appendChild(exercisesContainer);
 
                 const addExerciseBtn = document.createElement('button');
                 addExerciseBtn.type = 'button';
                 addExerciseBtn.classList.add('addExerciseBtn');
-                addExerciseBtn.textContent = 'Add Exercise';
                 addExerciseBtn.style.marginTop = '5px';
-                dayDiv.appendChild(addExerciseBtn);
+                addExerciseBtn.textContent = 'Add Exercise';
 
                 const removeDayBtn = document.createElement('button');
                 removeDayBtn.type = 'button';
                 removeDayBtn.classList.add('removeDayBtn');
-                removeDayBtn.textContent = 'Remove Day';
                 removeDayBtn.style.marginLeft = '10px';
                 removeDayBtn.style.color = 'red';
-                dayDiv.appendChild(removeDayBtn);
+                removeDayBtn.textContent = 'Remove Day';
 
-                daysContainer.appendChild(dayDiv);
+                addExerciseBtn.addEventListener('click', () => addExercise(div, dayIndex));
+                removeDayBtn.addEventListener('click', () => div.remove());
+
+                div.appendChild(addExerciseBtn);
+                div.appendChild(removeDayBtn);
+
+                daysContainer.appendChild(div);
+
+                addExercise(div, dayIndex);
                 dayIndex++;
-                updateExerciseIds();
             }
 
-            addDayBtn.addEventListener('click', addDay);
-
-            daysContainer.addEventListener('change', function (e) {
-                if (e.target.classList.contains('exerciseSelect')) {
-                    updateExerciseIds();
-                }
+            // Init event listeners for default Day 1
+            document.querySelectorAll('.addExerciseBtn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const dayBlock = btn.closest('.day-block');
+                    addExercise(dayBlock, parseInt(dayBlock.dataset.dayIndex));
+                });
             });
 
-            daysContainer.addEventListener('click', function (e) {
-                if (e.target.classList.contains('removeExerciseBtn')) {
-                    e.target.closest('.exercise-row').remove();
-                    updateDayNamesAndIndexes();
-                }
-                if (e.target.classList.contains('removeDayBtn')) {
-                    if (confirm("Are you sure you want to remove this day?")) {
-                        e.target.closest('.day-block').remove();
-                        updateDayNamesAndIndexes();
-                    }
-                }
-                if (e.target.classList.contains('addExerciseBtn')) {
-                    const dayBlock = e.target.closest('.day-block');
-                    const dayIdx = parseInt(dayBlock.dataset.dayIndex);
-                    addExercise(dayBlock, dayIdx);
-                }
+            document.querySelectorAll('.removeExerciseBtn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.closest('.exercise-row').remove();
+                });
             });
 
             document.querySelectorAll('.exerciseSelect').forEach(select => {
                 select.addEventListener('change', updateExerciseIds);
             });
 
-            updateDayNamesAndIndexes();
+            addDayBtn.addEventListener('click', addDay);
+
+            updateExerciseIds();
         })();
     </script>
 }
