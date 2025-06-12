@@ -13,6 +13,10 @@ namespace MyFitnessJourney.Service.WorkoutProgram
 
         Task<CreateWorkoutProgramModelServiceModel> FullCreate(CreateWorkoutProgramModelServiceModel model, string userId);
 
-        Task<List<CreateWorkoutProgramModelServiceModel>> FullGet(string userId);
+        Task<List<CreateWorkoutProgramModelServiceModel>> FullGet(string userId, bool isArchived);
+
+        Task<WorkoutProgramServiceModel> ArchiveAsync(string programId);
+
+        Task<WorkoutProgramServiceModel> UnarchiveAsync(string programId);
     }
 }

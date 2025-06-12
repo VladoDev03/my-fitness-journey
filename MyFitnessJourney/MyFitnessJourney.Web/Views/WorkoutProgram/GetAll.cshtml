@@ -2,61 +2,79 @@
 
 @{
     ViewData["Title"] = "All Workout Programs";
+    bool isArchived = Context.Request.Query["isArchived"] == "true";
 }
 
-@{
-    if (Model.Count == 0)
+<h1>@(isArchived ? "Archived Workout Programs" : "All Workout Programs")</h1>
+
+<div class="mb-3">
+    @if (isArchived)
     {
-        <h1>You don't have any programs yet.</h1>
-        <a asp-action="Create" class="btn btn-primary">Add New Program</a>
+        <a asp-action="GetAll" asp-route-isArchived="false" class="btn btn-primary">See Active Programs</a>
     }
     else
     {
-        <h1>@ViewData["Title"]</h1>
-        <a asp-action="Create" class="btn btn-primary">Add New Program</a>
+        <a asp-action="GetAll" asp-route-isArchived="true" class="btn btn-secondary">See Archived Programs</a>
+        <a asp-action="Create" class="btn btn-success ms-2">Add New Program</a>
+    }
+</div>
 
-        int count = 1;
+@if (Model.Count == 0)
+{
+    <h3>@(isArchived ? "You don't have any archived programs." : "You don't have any active programs yet.")</h3>
+}
+else
+{
+    @foreach (var (program, index) in Model.Select((value, i) => (value, i)))
+    {
+        <div class="program mb-4 p-3 border rounded">
+            <h2>Program @(index + 1):</h2>
 
-        @foreach (var program in Model)
-        {
-            <div class="program">
-                <h2>Program @count:</h2>
+            @if (isArchived)
+            {
+                <form asp-action="Unarchive" method="post" class="mb-3">
+                    <input type="hidden" name="programId" value="@program.Id" />
+                    <button type="submit" class="btn btn-success">Unarchive</button>
+                </form>
+            }
+            else
+            {
+                <form asp-action="Archive" method="post" class="mb-3">
+                    <input type="hidden" name="programId" value="@program.Id" />
+                    <button type="submit" class="btn btn-warning">Archive</button>
+                </form>
+            }
 
-                @foreach (var day in program.Days)
-                {
-                    <div class="day">
-                        <h3>Day: @day.DayName</h3>
+            @foreach (var day in program.Days)
+            {
+                <div class="day mb-3">
+                    <h3>Day: @day.DayName</h3>
 
-                        <table class="table table-striped">
-                            <thead>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Exercise</th>
+                                <th>Sets</th>
+                                <th>Min Reps</th>
+                                <th>Max Reps</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var exercise in day.Exercises)
+                            {
                                 <tr>
-                                    <th>Exercise</th>
-                                    <th>Sets</th>
-                                    <th>Min Reps</th>
-                                    <th>Max Reps</th>
+                                    <td>@exercise.Name</td>
+                                    <td>@exercise.Sets</td>
+                                    <td>@exercise.RepsMin</td>
+                                    <td>@exercise.RepsMax</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var exercise in day.Exercises)
-                                {
-                                    <tr>
-                                        <td>@exercise.Name</td>
-                                        <td>@exercise.Sets</td>
-                                        <td>@exercise.RepsMin</td>
-                                        <td>@exercise.RepsMax</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-            </div>
-            <hr />
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
 
-            count++;
-            <br />
-            <br />
-            <br />
-        }
+            <hr />
+        </div>
     }
 }

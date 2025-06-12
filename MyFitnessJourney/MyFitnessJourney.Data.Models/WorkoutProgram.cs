@@ -12,5 +12,7 @@ namespace MyFitnessJourney.Data.Models
         public string UserId { get; set; }
 
         public IdentityUser User { get; set; }
+
+        public bool IsArchived { get; set; }
     }
 }

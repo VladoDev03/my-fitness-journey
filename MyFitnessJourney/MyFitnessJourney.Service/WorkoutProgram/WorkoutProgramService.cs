@@ -35,11 +35,32 @@ namespace MyFitnessJourney.Service.WorkoutProgram
             _exerciseService = exerciseService;
         }
 
+        public async Task<WorkoutProgramServiceModel> ArchiveAsync(string programId)
+        {
+            WorkoutProgramServiceModel program = await this.GetByIdAsync(programId);
+            program.IsArchived = true;
+
+            WorkoutProgramServiceModel result = await UpdateAsync(programId, program);
+
+            return result;
+        }
+
+        public async Task<WorkoutProgramServiceModel> UnarchiveAsync(string programId)
+        {
+            WorkoutProgramServiceModel program = await this.GetByIdAsync(programId);
+            program.IsArchived = false;
+
+            WorkoutProgramServiceModel result = await UpdateAsync(programId, program);
+
+            return result;
+        }
+
         public async Task<WorkoutProgramServiceModel> CreateAsync(WorkoutProgramServiceModel model)
         {
             Data.Models.WorkoutProgram workoutProgram = new Data.Models.WorkoutProgram
             {
-                UserId = model.UserId
+                UserId = model.UserId,
+                IsArchived = false
             };
 
             Data.Models.WorkoutProgram result = await workoutProgramRepository.CreateAsync(workoutProgram);
@@ -47,7 +68,8 @@ namespace MyFitnessJourney.Service.WorkoutProgram
             return new WorkoutProgramServiceModel
             {
                 Id = result.Id,
-                UserId = result.UserId
+                UserId = result.UserId,
+                IsArchived = result.IsArchived
             };
         }
 
@@ -60,7 +82,8 @@ namespace MyFitnessJourney.Service.WorkoutProgram
         {
             WorkoutProgramServiceModel program = await this.CreateAsync(new WorkoutProgramServiceModel
             {
-                UserId = userId
+                UserId = userId,
+                IsArchived = false
             });
 
             foreach (var day in model.Days)
@@ -87,10 +110,11 @@ namespace MyFitnessJourney.Service.WorkoutProgram
             return model;
         }
 
-        public async Task<List<CreateWorkoutProgramModelServiceModel>> FullGet(string userId)
+        public async Task<List<CreateWorkoutProgramModelServiceModel>> FullGet(string userId, bool isArchived)
         {
             List<WorkoutProgramServiceModel> workoutProgramServiceModels = this
                 .GetAllByUserId(userId)
+                .Where(wp => isArchived ? wp.IsArchived : !wp.IsArchived)
                 .ToList();
 
             List<CreateWorkoutProgramModelServiceModel> result = new List<CreateWorkoutProgramModelServiceModel>();
@@ -99,7 +123,63 @@ namespace MyFitnessJourney.Service.WorkoutProgram
             {
                 CreateWorkoutProgramModelServiceModel programModel = new CreateWorkoutProgramModelServiceModel
                 {
-                    Days = new List<DayServiceModel>()
+                    Days = new List<DayServiceModel>(),
+                    Id = wp.Id
+                };
+
+                List<WorkoutDayServiceModel> days = _workoutDayService.GetByProgramId(wp.Id);
+
+                foreach (var day in days)
+                {
+                    DayServiceModel dayViewModel = new DayServiceModel
+                    {
+                        DayName = day.Name,
+                        Exercises = new List<ProgramExerciseServiceModel>()
+                    };
+
+                    List<ProgramDayExerciseServiceModel> exercises = _programDayExerciseService
+                        .GetByWorkoutDayId(day.Id)
+                        .ToList();
+
+                    foreach (var exercise in exercises)
+                    {
+                        var exerciseData = await _exerciseService.GetByIdAsync(exercise.ExerciseId);
+
+                        ProgramExerciseServiceModel exerciseViewModel = new ProgramExerciseServiceModel
+                        {
+                            Name = exerciseData.Name,
+                            RepsMax = exercise.MaxReps,
+                            RepsMin = exercise.MinReps,
+                            Sets = exercise.Sets
+                        };
+
+                        dayViewModel.Exercises.Add(exerciseViewModel);
+                    }
+
+                    programModel.Days.Add(dayViewModel);
+                }
+
+                result.Add(programModel);
+            }
+
+            return result;
+        }
+
+        public async Task<List<CreateWorkoutProgramModelServiceModel>> FullGetArchived(string userId)
+        {
+            List<WorkoutProgramServiceModel> workoutProgramServiceModels = this
+                .GetAllByUserId(userId)
+                .Where(wp => wp.IsArchived)
+                .ToList();
+
+            List<CreateWorkoutProgramModelServiceModel> result = new List<CreateWorkoutProgramModelServiceModel>();
+
+            foreach (var wp in workoutProgramServiceModels)
+            {
+                CreateWorkoutProgramModelServiceModel programModel = new CreateWorkoutProgramModelServiceModel
+                {
+                    Days = new List<DayServiceModel>(),
+                    Id = wp.Id
                 };
 
                 List<WorkoutDayServiceModel> days = _workoutDayService.GetByProgramId(wp.Id);
@@ -147,6 +227,7 @@ namespace MyFitnessJourney.Service.WorkoutProgram
                 {
                     Id = wp.Id,
                     UserId = wp.UserId,
+                    IsArchived = wp.IsArchived
                 });
         }
 
@@ -158,6 +239,7 @@ namespace MyFitnessJourney.Service.WorkoutProgram
                 {
                     Id = wp.Id,
                     UserId = wp.UserId,
+                    IsArchived = wp.IsArchived
                 })
                 .ToList();
         }
@@ -170,13 +252,37 @@ namespace MyFitnessJourney.Service.WorkoutProgram
                 {
                     Id = wp.Id,
                     UserId = wp.UserId,
+                    IsArchived = wp.IsArchived
                 })
                 .FirstOrDefaultAsync();
         }
 
         public async Task<WorkoutProgramServiceModel> UpdateAsync(string id, WorkoutProgramServiceModel model)
         {
-            throw new NotImplementedException();
+            WorkoutProgramServiceModel program = await GetByIdAsync(id);
+
+            if (program == null)
+            {
+                throw new KeyNotFoundException($"Workout program with ID {id} not found.");
+            }
+
+            Data.Models.WorkoutProgram existingEntity = new Data.Models.WorkoutProgram
+            {
+                Id = id,
+                UserId = model.UserId,
+                IsArchived = model.IsArchived
+            };
+
+            existingEntity.IsArchived = model.IsArchived;
+
+            Data.Models.WorkoutProgram updatedProgram = await workoutProgramRepository.UpdateAsync(existingEntity);
+
+            return new WorkoutProgramServiceModel
+            {
+                Id = updatedProgram.Id,
+                UserId = updatedProgram.UserId,
+                IsArchived = updatedProgram.IsArchived
+            };
         }
     }
 }

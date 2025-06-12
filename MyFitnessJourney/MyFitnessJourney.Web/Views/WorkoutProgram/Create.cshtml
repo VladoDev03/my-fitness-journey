@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Create Training Program";
 
-    var exercisesJson = System.Text.Json.JsonSerializer.Serialize(Model.Select(x => new { id = x.Id, name = x.CapitalizedName }).ToList());
+    string exercisesJson = System.Text.Json.JsonSerializer.Serialize(Model.Select(x => new { id = x.Id, name = x.CapitalizedName }).ToList());
 }
 
 <h2>@ViewData["Title"]</h2>

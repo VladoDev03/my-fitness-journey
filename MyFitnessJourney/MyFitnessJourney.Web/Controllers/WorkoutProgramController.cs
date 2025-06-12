@@ -35,11 +35,11 @@ namespace MyFitnessJourney.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(bool isArchived = false)
         {
             string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            List<CreateWorkoutProgramModelServiceModel> result = await _workoutProgramService.FullGet(userId);
+            List<CreateWorkoutProgramModelServiceModel> result = await _workoutProgramService.FullGet(userId, isArchived);
 
             return View(result);
         }
@@ -72,6 +72,22 @@ namespace MyFitnessJourney.Web.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Archive(string programId)
+        {
+            await _workoutProgramService.ArchiveAsync(programId);
+
+            return RedirectToAction(nameof(GetAll));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unarchive(string programId)
+        {
+            await _workoutProgramService.UnarchiveAsync(programId);
+
+            return RedirectToAction(nameof(GetAll));
         }
     }
 }

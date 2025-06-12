@@ -9,5 +9,7 @@ namespace MyFitnessJourney.Service.Models.WorkoutProgram
     public class WorkoutProgramServiceModel : BaseServiceModel
     {
         public string UserId { get; set; }
+
+        public bool IsArchived { get; set; }
     }
 }
