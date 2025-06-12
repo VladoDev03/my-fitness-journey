@@ -35,9 +35,16 @@ namespace MyFitnessJourney.Web.Controllers
                 Name = exercise.Name,
             };
 
-            await _exerciseService.CreateAsync(exerciseServiceModel);
-
-            return RedirectToAction("Index", "Home");
+            try
+            {
+                await _exerciseService.CreateAsync(exerciseServiceModel);
+                return RedirectToAction("Index", "Home");
+            }
+            catch (InvalidOperationException)
+            {
+                ModelState.AddModelError(nameof(exercise.Name), "An exercise with this name already exists.");
+                return View(exercise);
+            }
         }
     }
 }

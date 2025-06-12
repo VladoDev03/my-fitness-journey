@@ -23,7 +23,7 @@ namespace MyFitnessJourney.Service.Exercise
         {
             if (await GetByNameAsync(model.Name) != null)
             {
-                throw new ArgumentException($"Exercise with name {model.Name} already exists.");
+                throw new InvalidOperationException($"Exercise with name {model.Name} already exists.");
             }
 
             Data.Models.Exercise exercise = new Data.Models.Exercise

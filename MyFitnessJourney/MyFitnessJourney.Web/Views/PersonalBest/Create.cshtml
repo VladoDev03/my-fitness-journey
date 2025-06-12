@@ -1,17 +1,76 @@
 ﻿@model List<MyFitnessJourney.Web.Models.Exercise.ExerciseViewModel>
 
-<form asp-action="Create" method="post">
-    <label for="exercise">Exercise</label>
-    <select id="exercise" name="Exercise" class="form-select">
-        <option value="">-- Select an exercise --</option>
-        @foreach (var exercise in Model)
-        {
-            <option value="@exercise.Id">@exercise.CapitalizedName</option>
+<style>
+    /* Обвивка на формата */
+    .exercise-select-form-wrapper {
+        max-width: 500px;
+        margin: 3rem auto;
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+        .exercise-select-form-wrapper label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 1rem;
         }
-    </select>
 
-    <label for="weight">Weight</label>
-    <input type="number" name="Weight" class="form-control" />
+        .exercise-select-form-wrapper .form-select,
+        .exercise-select-form-wrapper .form-control {
+            width: 100%;
+            padding: 0.6rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
 
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+            .exercise-select-form-wrapper .form-select:focus,
+            .exercise-select-form-wrapper .form-control:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            }
+
+        .exercise-select-form-wrapper .btn-primary {
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+            .exercise-select-form-wrapper .btn-primary:hover {
+                background-color: #0056b3;
+            }
+</style>
+
+<div class="exercise-select-form-wrapper">
+    <form asp-action="Create" method="post">
+        <label for="exercise">Exercise</label>
+        <select id="exercise" name="Exercise" class="form-select">
+            <option value="">-- Select an exercise --</option>
+            @foreach (var exercise in Model)
+            {
+                <option value="@exercise.Id">@exercise.CapitalizedName</option>
+            }
+        </select>
+
+        <label for="weight">Weight</label>
+        <input type="number" name="Weight" class="form-control" />
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
