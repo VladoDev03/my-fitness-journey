@@ -27,6 +27,11 @@ namespace MyFitnessJourney.Service.PersonalBest
 
         public async Task<PersonalBestServiceModel> CreateWithExerciseAsync(PersonalBestServiceModel model, string exerciseId)
         {
+            if (exerciseId == null)
+            {
+                throw new ArgumentNullException(nameof(exerciseId), "Exercise ID cannot be null.");
+            }
+
             Data.Models.PersonalBest personalBest = new Data.Models.PersonalBest
             {
                 Weight = model.Weight,

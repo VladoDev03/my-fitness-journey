@@ -89,13 +89,9 @@ namespace MyFitnessJourney.Web.Controllers
         {
             string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
+            try
             {
-                return Unauthorized();
-            }
-
-            await _personalBestService
-                .CreateWithExerciseAsync(
+                await _personalBestService.CreateWithExerciseAsync(
                     new PersonalBestServiceModel
                     {
                         Weight = personalBest.Weight,
@@ -104,7 +100,23 @@ namespace MyFitnessJourney.Web.Controllers
                     personalBest.Exercise
                 );
 
-            return RedirectToAction("GetAll", "PersonalBest");
+                return RedirectToAction("GetAll", "PersonalBest");
+            }
+            catch (ArgumentNullException ex) when (ex.ParamName == "exerciseId")
+            {
+                ModelState.AddModelError("Exercise", "Exercise is required.");
+            }
+
+            List<ExerciseViewModel> exercises = _exerciseService
+                .GetAll()
+                .Select(x => new ExerciseViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToList();
+
+            return View(exercises);
         }
 
         public async Task<IActionResult> Delete(string id)

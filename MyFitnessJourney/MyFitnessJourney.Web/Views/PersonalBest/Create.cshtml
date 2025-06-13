@@ -11,6 +11,8 @@
             }
         </select>
 
+        @Html.ValidationMessage("Exercise", "", new { @class = "text-danger" })
+
         <label for="weight">Weight</label>
         <input type="number" name="Weight" class="form-control" />
 
